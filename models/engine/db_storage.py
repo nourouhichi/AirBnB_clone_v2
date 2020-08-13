@@ -27,12 +27,12 @@ class DBStorage:
                 getenv("HBNB_MYSQL_HOST"),
                 getenv("HBNB_MYSQL_DB")), pool_pre_ping=True)
         if getenv("") == 'test':
-             Base.metadata.drop_all(self.__engine)
+            Base.metadata.drop_all(self.__engine)
 
     def all(self, cls=None):
         """query some objects on the current database session"""
-        objects={}
-        classes= ["State", "City", "User", "Place", "Review", "Amenity"]
+        objects = {}
+        classes = ["State", "City", "User", "Place", "Review", "Amenity"]
         if cls is None:
             for i in classes:
                 ob = self.__session.query(i)
