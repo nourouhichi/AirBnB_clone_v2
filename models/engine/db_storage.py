@@ -10,6 +10,8 @@ from models.city import City
 from models.amenity import Amenity
 from models.place import Place
 from models.review import Review
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker, scoped_session
 
 
 class DBStorage:
@@ -50,7 +52,7 @@ class DBStorage:
 
     def save(self):
         """commit all changes of the current database session"""
-        self.__commit()
+        self.__session.commit()
 
     def delete(self, obj=None):
         """ delete from the current database session"""
