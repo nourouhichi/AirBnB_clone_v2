@@ -32,8 +32,8 @@ class BaseModel:
                     if i == 'created_at':
                         j = datetime.strptime(kwargs['created_at'],
                                                      '%Y-%m-%dT%H:%M:%S.%f')
-                    if i is not '__class__':
-                        setattr(self, key, value)
+                    if i != '__class__':
+                        setattr(self, i, j)
 
     def __str__(self):
         """Returns a string representation of the instance"""

@@ -131,7 +131,7 @@ class HBNBCommand(cmd.Cmd):
             if re.match('^\"(.*)\"$', value):
                 value = value.strip('\"')
             if hasattr(new_instance, key):
-                setattr(new_instance, key, eval(value))
+                setattr(new_instance, key, value)
         new_instance.save()
         print(new_instance.id)
 

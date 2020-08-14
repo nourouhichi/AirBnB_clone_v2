@@ -19,7 +19,7 @@ class State(BaseModel, Base):
         def cities(self):
             """returns a liist of cities of a state"""
             cities_per_state = []
-            for key and value in models.storage.all(City).items():
+            for key, value in models.storage.all(City).items():
                 if self.id == value.state_id:
                     cities_per_state.append(value)
                 return cities_per_state
