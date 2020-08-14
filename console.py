@@ -127,7 +127,13 @@ class HBNBCommand(cmd.Cmd):
             dic_list = i.split("=")
             key = dic_list[0]
             value = dic_list[1]
-            value.replace('_', ' ')
+            if value[0] == '"':
+                value.replace('_', ' ')
+                value = value.strip('\"')
+            elif '.' in value:
+                value = float(value)
+            else:
+                value = int(value)
             if hasattr(new_instance, key):
                 setattr(new_instance, key, value)
         new_instance.save()
