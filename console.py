@@ -2,6 +2,7 @@
 """ Console Module """
 import cmd
 import sys
+import re
 from models.base_model import BaseModel
 from models.__init__ import storage
 from models.user import User
@@ -127,8 +128,9 @@ class HBNBCommand(cmd.Cmd):
             dic_list = i.split("=")
             key = dic_list[0]
             value = dic_list[1]
-            if value[0] == '"':
-                value.replace('_', ' ')
+            if re.match('^\"(.*)\"$', value):
+                if '_' in value:
+                    value.replace('_', ' ')
                 value = value.strip('\"')
             elif '.' in value:
                 value = float(value)
