@@ -15,24 +15,23 @@ class DBStorage:
     """new class """
     __engine = None
     __session = None
+
     def __init__(self):
         """ fn init """
         self.__engine = create_engine(
-                        'mysql+mysqldb://{}:{}@{}/{}'.format(
-                os.getenv("HBNB_MYSQL_USER"),
-                os.getenv("HBNB_MYSQL_PWD"),
-                os.getenv("HBNB_MYSQL_HOST"),
-                os.getenv("HBNB_MYSQL_DB")), pool_pre_ping=True)
+                'mysql+mysqldb://{}:{}@{}/{}'.format(
+                    os.getenv("HBNB_MYSQL_USER"),
+                    os.getenv("HBNB_MYSQL_PWD"),
+                    os.getenv("HBNB_MYSQL_HOST"),
+                    os.getenv("HBNB_MYSQL_DB")), pool_pre_ping=True)
         if os.getenv("HBNB_ENV") == "test":
             Base.metadata.drop_all(self.__engine)
-        )
-
 
     def all(self, cls=None):
         """querying data"""
         inst = {}
-        if cls == None:
-        classes = ["Statee", "City", "User", "Place", "Review", "Amenity"]
+        if cls is None:
+            classes = ["Statee", "City", "User", "Place", "Review", "Amenity"]
             for name in classes:
                 objs = self.__session.query(eval(name))
                 for obj in objs:
@@ -44,11 +43,9 @@ class DBStorage:
                 key = "{}.{}".format(type(obj).__name__, obj.id)
                 inst[key] = obj
 
-
     def new(self, obj):
         """adding obj"""
         self.__session.add(obj)
-    
 
     def save(self):
         """commiting obj"""
@@ -63,7 +60,7 @@ class DBStorage:
         """reloading session """
         Base.metadata.create_all(self.__engine)
         Session = scoped_session(sessionmaker(
-            bind = self.__engine, expire_on_commit=False))
+            bind=self.__engine, expire_on_commit=False))
         self.__session = Session()
 
     def close(self):
