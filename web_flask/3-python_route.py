@@ -28,8 +28,8 @@ def text(text):
 
 
 @app.route('/python', strict_slashes=False)
-@app.route('/python/(<text>)', strict_slashes=False)
-def text(text="is cool"):
+@app.route('/python/<text>', strict_slashes=False)
+def text_python(text="is cool"):
     """returning a text"""
     spaced = text.replace("_", " ")
     return 'Python {}'.format(spaced)
