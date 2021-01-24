@@ -38,7 +38,6 @@ class HBNBCommand(cmd.Cmd):
 
     def precmd(self, line):
         """Reformat command line for advanced command syntax.
-
         Usage: <class name>.<command>([<id> [<*args> or <**kwargs>]])
         (Brackets denote optional fields in usage example.)
         """
@@ -115,24 +114,31 @@ class HBNBCommand(cmd.Cmd):
         pass
 
     def do_create(self, args):
-        """ """
-        try:
-            if not line:
-                raise SyntaxError()
-            my_list = line.split(" ")
-            obj = eval("{}()".format(my_list[0]))
-            for element in my_list[1:]:
-                key, val = element.split('=')
-                val = val.replace('_', ' ')
-                if hasattr(obj, key):
-                    setattr(obj, key, eval(val))
-            obj.save()
-            print("{}".format(obj.id))
-        except SyntaxError:
+        """ Create an object of any class"""
+        my_list = args.split(' ')
+        if not my_list[0]:
             print("** class name missing **")
-        except NameError:
+            return
+        elif my_list[0] not in HBNBCommand.classes:
             print("** class doesn't exist **")
-
+            return
+        new_instance = eval('{}()'.format(my_list[0]))
+        for i in my_list[1:]:
+            dic_list = i.split("=")
+            key = dic_list[0]
+            value = dic_list[1]
+            if re.match('^\"(.*)\"$', value):
+                if '_' in value:
+                    value.replace('_', ' ')
+                value = value.strip('\"')
+            elif '.' in value:
+                value = float(value)
+            else:
+                value = int(value)
+            if hasattr(new_instance, key):
+                setattr(new_instance, key, value)
+        new_instance.save()
+        print(new_instance.id)
 
     def help_create(self):
         """ Help information for the create method """
