@@ -2,7 +2,6 @@
 """ Console Module """
 import cmd
 import sys
-import re
 from models.base_model import BaseModel
 from models.__init__ import storage
 from models.user import User
@@ -38,6 +37,7 @@ class HBNBCommand(cmd.Cmd):
 
     def precmd(self, line):
         """Reformat command line for advanced command syntax.
+
         Usage: <class name>.<command>([<id> [<*args> or <**kwargs>]])
         (Brackets denote optional fields in usage example.)
         """
@@ -113,33 +113,26 @@ class HBNBCommand(cmd.Cmd):
         """ Overrides the emptyline method of CMD """
         pass
 
-    def do_create(self, args):
-        """ Create an object of any class"""
-        my_list = args.split(' ')
-        if not my_list[0]:
+    def do_create(self, line):
+        """ """
+        try:
+            if not line:
+                raise SyntaxError()
+            my_list = line.split(" ")
+            obj = eval("{}()".format(my_list[0]))
+            for element in my_list[1:]:
+                key, val = element.split('=')
+                val = val.replace('_', ' ')
+                if hasattr(obj, key):
+                    setattr(obj, key, eval(val))
+            obj.save()
+            print("{}".format(obj.id))
+        except SyntaxError:
             print("** class name missing **")
-            return
-        elif my_list[0] not in HBNBCommand.classes:
+        except NameError:
             print("** class doesn't exist **")
-            return
-        new_instance = eval('{}()'.format(my_list[0]))
-        for i in my_list[1:]:
-            dic_list = i.split("=")
-            key = dic_list[0]
-            value = dic_list[1]
-            if re.match('^\"(.*)\"$', value):
-                if '_' in value:
-                    value.replace('_', ' ')
-                value = value.strip('\"')
-            elif '.' in value:
-                value = float(value)
-            else:
-                value = int(value)
-            if hasattr(new_instance, key):
-                setattr(new_instance, key, value)
-        new_instance.save()
-        print(new_instance.id)
 
+        
     def help_create(self):
         """ Help information for the create method """
         print("Creates a class of any type")
@@ -216,15 +209,15 @@ class HBNBCommand(cmd.Cmd):
         print_list = []
 
         if args:
-            args = args.split(' ')[0]  # remove possible trailing args
+            args = args.split(' ')[0] 
             if args not in HBNBCommand.classes:
                 print("** class doesn't exist **")
                 return
-            for k, v in storage._FileStorage__objects.items():
+            for k, v in storage.all().items():
                 if k.split('.')[0] == args:
                     print_list.append(str(v))
         else:
-            for k, v in storage._FileStorage__objects.items():
+            for k, v in storage.all():
                 print_list.append(str(v))
 
         print(print_list)
